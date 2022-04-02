@@ -2,17 +2,18 @@
 # Node.js sequelize express CRUD
 Node.js CRUD application based on the SQLite database design and Express.js framework
 
+Forked from https://github.com/masfranzhuo/sequalize-express-SQLite
+
 This Node.js CRUD code use 
 - Express.js framework
 - SQLite database
-- sequelize ORM
+- sequelize
 - dotenv module for setting environment
+
 ```
 npm init
 
-npm install --save express sqlite3 sequelize body-parser
-
-npm install --save dotenv
+npm install
 ```
 
 ## Database
@@ -42,14 +43,27 @@ models.sequelize.sync().then(function() {
 
 This app use database named `example` and `books` table which has 4 columns. 
 
-## Route
-Create `routes` folder on the root path and put route file there. After that initialiaze and register route file path on `app.js` file.
-
-```
-var books = require('./routes/books');
-
-app.use('/books', books);
-```
-
 ## Documentation
 This API documented with [Swagger](https://app.swaggerhub.com/apis/masfranzhuo/sequalize-express-SQLite/1.0.0) and hosted on [Heroku](http://sequalize-express-sqlite.herokuapp.com/)
+
+## Solved Error Documentation
+
+- In `app.js` : `require("dotenv").load()` is not a function
+
+Solution : use `require("dotenv").config()` instead
+
+https://stackoverflow.com/questions/55271926/dotenv-load-is-not-a-function-while-trying-to-run-a-node-script
+
+- In `./models/index.js` : `sequelize.import()` is not a function
+
+Solution : https://stackoverflow.com/questions/62917111/sequelize-import-is-not-a-function
+
+- In `./models/index.js` : TypeError: DataTypes.ENUM is not a function
+
+Solution : in `./models/index.js` write 
+
+`db.User = require("./user.model")(sequelize, DataTypes);` not
+
+`db.User = require("./user.model")(DataTypes, sequelize);`
+
+Because the input of function in `./models/user.model.js` is `(sequelize, DataTypes)`.

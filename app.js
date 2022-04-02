@@ -1,39 +1,27 @@
-var express = require('express');
+var express = require("express");
 var app = express();
-var bodyParser = require('body-parser');
-var sqlite = require('sqlite3');
-var env = require('dotenv').load();
-var port = process.env.PORT || 8080;
+var bodyParser = require("body-parser");
+var sqlite = require("sqlite3");
 
-// models
-var models = require("./models");
+// set dotenv to able use env variable
+require('dotenv').config();
 
-// routes
-var books = require('./routes/books');
-
-//Sync Database
-models.sequelize.sync().then(function() {
-    console.log('connected to database')
-}).catch(function(err) {
-    console.log(err)
-});
+// sync database
+require("./models").sequelize.sync().then(function() {
+    console.log("Connected to database")
+})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// register routes
-app.use('/books', books);
+// routes
+require("./routes")(app);
 
-// index path
-app.get('/', function(req, res){
-    console.log('app listening on port: '+port);
-    res.send('tes express nodejs sqlite')
-});
-
+var port = process.env.PORT || 8080;
 app.listen(port, function(){
-    console.log('app listening on port: '+port);
+    console.log("App listening on port: "+port);
 });
 
 module.exports = app;
